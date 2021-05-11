@@ -1,0 +1,25 @@
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: yugabyte-connector-sink
+  labels:
+    strimzi.io/cluster: kafka-connect-cluster
+spec:
+  class: org.apache.camel.kafkaconnector.cql.CamelCqlSinkConnector
+  tasksMax: 1
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    topics: kafka-topic-telemetry
+    ignoreErrors: None
+    maxConcurrentRequests: 500
+    maxNumberOfRecordsInBatch: 32
+    queryExecutionTimeout: 30
+    connectionPoolLocalSize: 4
+    jmx: true
+    camel.sink.path.hosts: db-cassandra.data-store.svc.cluster.local
+    camel.sink.path.port: 9042
+    camel.sink.path.keyspace: racing_data
+    camel.sink.endpoint.cql: insert into telemetry(car_uuid, m_speed, event_ts) values (uuid(), ?, toTimestamp(now()))
+    camel.sink.endpoint.username: cassandra
+    camel.sink.endpoint.password: Suo9tBXzE1

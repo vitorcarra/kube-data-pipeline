@@ -1,0 +1,27 @@
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: "elastic-telemetry-connector-sink"
+  labels:
+    strimzi.io/cluster: kafka-connect-cluster
+spec:
+  class: io.confluent.connect.elasticsearch.ElasticsearchSinkConnector
+  tasksMax: 1
+  config:
+    connection.url: "http://elasticsearch-master.elastic-stack.svc.cluster.local:9200"
+    topics: kafka-topic-telemetry
+    name: "elastic-telemetry-connector-sink"
+    auto.create: true
+    auto.evolve: true
+    type.name: "_doc"
+    key.converter: io.confluent.connect.avro.AvroConverter
+    value.converter: io.confluent.connect.avro.AvroConverter
+    key.converter.schema.registry.url: http://schema-registry:8081
+    value.converter.schema.registry.url: http://schema-registry:8081
+    key.igore: true
+    transforms: routeTS,extractKey
+    transforms.routeTS.type: org.apache.kafka.connect.transforms.TimestampRouter
+    transforms.routeTS.topic.format": ${topic}-${timestamp}
+    transforms.routeTS.timestamp.format: "YYYYMMDD"
+    transforms.extractKey.type: org.apache.kafka.connect.transforms.ExtractField$Key
+    transforms.extractKey.field: car_id

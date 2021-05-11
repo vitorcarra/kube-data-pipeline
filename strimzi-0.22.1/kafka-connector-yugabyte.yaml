@@ -1,0 +1,33 @@
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: yugabyte-telemetry-connector-sink
+  labels:
+    strimzi.io/cluster: kafka-connect-cluster
+spec:
+  class: com.yb.connect.sink.YBSinkConnector
+  tasksMax: 1
+  config:
+    #value.converter.schemas.enable: true
+    #key.converter: io.confluent.connect.avro.AvroConverter
+    #value.converter: io.confluent.connect.avro.AvroConverter
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+    key.converter.schema.registry.url: http://schema-registry:8081
+    value.converter.schema.registry.url: http://schema-registry:8081
+
+    topics: kafka-topic-telemetry
+
+    #consumer.auto.offset.reset: latest
+    #consumer.override.auto.offset.reset: latest
+    #connector.client.config.override.policy: all
+
+    errors.tolerance: all
+    errors.log.enable: true
+    errors.log.include.messages: true
+
+    yugabyte.cql.keyspace: racing_data
+    yugabyte.cql.tablename: tbl_telemetry
+    yugabyte.cql.contact.points: yb-tserver-service.yugabyte.svc.cluster.local:9042

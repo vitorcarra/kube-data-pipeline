@@ -1,0 +1,10 @@
+{
+  "namespace": "car.telemetry",
+  "type": "record",
+  "name": "telemetry",
+  "fields": [
+    { "name": "name", "type": "string" },
+    { "name": "speed", "type": "float" },
+    { "name": "timestamp", "type": "timestamp-millis" }
+  ]
+}
