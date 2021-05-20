@@ -33,7 +33,7 @@ def send_message(config, avroProducer, **kwargs):
 
     event = {
         "car_id": str(kwargs["car_id"]),
-
+        "speed": float(kwargs["speed"]),
         "ts": int(datetime.timestamp(datetime.now()))
     }
     print(event)

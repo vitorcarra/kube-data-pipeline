@@ -5,7 +5,8 @@ metadata:
   labels:
     strimzi.io/cluster: kafka-connect-cluster
 spec:
-  class: com.yb.connect.sink.YBSinkConnector
+  #class: com.yb.connect.sink.YBSinkConnector
+  class: com.datastax.oss.kafka.sink.CassandraSinkConnector
   tasksMax: 1
   config:
     #value.converter.schemas.enable: true
@@ -31,3 +32,9 @@ spec:
     yugabyte.cql.keyspace: racing_data
     yugabyte.cql.tablename: tbl_telemetry
     yugabyte.cql.contact.points: yb-tserver-service.yugabyte.svc.cluster.local:9042
+
+    contactPoints: yb-tserver-service.yugabyte.svc.cluster.local
+    loadBalancing.localDc: datacenter1
+
+    topic.kafka-topic-telemetry.racing_data.tbl_telemetry.mapping: "car_id=value.car_id, speed=value.speed"
+    #topic.kafka-topic-telemetry.racing_data.tbl_telemetry.consistencyLevel": "LOCAL_QUORUM"
